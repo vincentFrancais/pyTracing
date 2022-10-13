@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyTracing"
+description = "Simple ray tracing, supports only spheres as primitive as of now. Fast version using Numba"
+requires-python = ">=3.10"
+license = {text = "BSD 3-Clause License"}
+dependencies = [
+    "numba",
+    "numpy",
+    "Pillow",
+    "scipy",
+    "tqdm",
+]
