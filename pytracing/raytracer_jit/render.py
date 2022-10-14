@@ -1,5 +1,4 @@
 import collections
-import collections
 import time
 from typing import NewType
 
@@ -7,8 +6,11 @@ import numba
 import numpy as np
 from PIL import Image
 from numba import literal_unroll
+from numba.typed import List as NumbaList
 
-from pytracing_numba.geometry.vector import vec3f, normalize
+from pytracing.raytracer_jit.geometry.vector import vec3f, normalize
+from pytracing.raytracer_jit.shapes.shape import Sphere
+from pytracing.scene import Scene
 
 Vec3f = NewType("Vec3f", np.ndarray)
 
@@ -97,9 +99,11 @@ def cast_ray(ray_origin: Vec3f, ray_dir: Vec3f, bounce: int, max_bounces: int, o
     light_distances = [o.intersect(p_hit + normal * 0.0001, to_light) for idx, o in enumerate(objs) if
                        idx != nearest_idx]
     light_distances = np.asarray(light_distances, dtype=np.float64)
-    if np.min(light_distances) < np.inf:
-        # We are shadowed !!
-        return vec3f(0, 0, 0)
+    if len(light_distances) > 0:
+        # We first check that there is other objects in the scene
+        if np.min(light_distances) < np.inf:
+            # We are shadowed !!
+            return vec3f(0, 0, 0)
 
     # Lambert shading (diffuse)
     col_ray = hit_object.lambert_shading(p_hit, to_light)
@@ -139,7 +143,7 @@ def compute_frame_buffer(opts: Options, objs):
             # We want the ray to traverse the center of the pixel and square pixels
             x = (2 * (i + 0.5) / opts.width - 1) * image_aspect_ratio * scale
             y = (1 - 2 * (j + 0.5) / opts.height) * scale
-
+            # print(x, y)
             # ray direction in camera coords to world coords, normalized
             ray_dir = np.asarray((x, y, -1), dtype=np.float64).dot(opts.camera_to_world[:-1, :-1])
             ray_dir /= np.sqrt(np.linalg.norm(ray_dir))  # normalized
@@ -159,19 +163,32 @@ def make_ppm(opts: Options, frame_buffer):
             f.write(f"{int(r)} {int(g)} {int(b)}\n")
 
 
-def render(opts: Options, objs):
+def _convert_scene_to_numba_list(scene: Scene):
+    objects_list = NumbaList()
+    for o in scene.objects:
+        objects_list.append(o)
+    return objects_list
+
+
+def render(opts: Options, scene: Scene):
+    objs = scene_factory(scene)
     tic = time.perf_counter()
     fb = compute_frame_buffer(opts, objs)
     toc = time.perf_counter()
     print(f"Frame buffer computed in {toc - tic:0.4f} sec")
-    make_png(fb, opts)
+    return fb
 
 
-def make_png(fb: np.ndarray, opts):
-    # The frame buffer is first clamped to [0-255]
-    fb = fb.clip(0, 1) * 255
-    # extract the R G B channels (first, second and third col of the frame buffer)
-    # each channel is reshaped to the actual image size and converted to uint8
-    # Each channel is converted to grayscale PIL Image, then merged to a RGB Image
-    rgb = [Image.fromarray(fb[..., i].reshape((opts.height, opts.width)).astype(np.uint8), "L") for i in range(3)]
-    Image.merge("RGB", rgb).save("rt2.png")
+def scene_factory(scene: Scene):
+    """Convert a Scene object to a list of Numba jitclasses objects
+    Only sphere are supported.
+    """
+    objects_list = NumbaList()
+    for o in scene.objects:
+        if o.type != "sphere":
+            raise ValueError("Fast renderer supports only sphere objects")
+        center = vec3f(*o.center)
+        color = vec3f(*o.color)
+        o_jit = Sphere(center, o.radius, color)
+        objects_list.append(o_jit)
+    return objects_list

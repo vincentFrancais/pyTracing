@@ -18,7 +18,7 @@ _F_EPS = np.finfo(float).eps
 
 
 @numba.njit()
-def vec2f(x: _Tf = 0., y: _Tf = 0.) -> Vec2f:
+def vec2f(x: _Tf = 0., y: _Tf = 0.):
     """ Factoru method to create a 2-dim vector (np.ndarray)
 
     :param x: x value, default is 0
@@ -32,7 +32,7 @@ def vec2f(x: _Tf = 0., y: _Tf = 0.) -> Vec2f:
 
 
 @numba.njit()
-def vec3f(x: _Tf = 0., y: _Tf = 0., z: _Tf = 0.) -> Vec3f:
+def vec3f(x: _Tf = 0., y: _Tf = 0., z: _Tf = 0.):
     """ Factoru method to create a 3-dim vector (np.ndarray)
 
     :param x: x value

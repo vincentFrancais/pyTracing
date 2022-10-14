@@ -1,6 +1,6 @@
 import random
 from abc import ABCMeta, abstractmethod
-from typing import Tuple
+from typing import Tuple, Optional
 
 import numpy as np
 
@@ -12,8 +12,8 @@ FARAWAY = 1.0e39
 
 
 class ImplicitObject(metaclass=ABCMeta):
-    def __init__(self):
-        self.color = Vec3f(random.random(), random.random(), random.random())
+    def __init__(self, color: Optional[Vec3f] = None):
+        self.color = color if color is not None else Vec3f(random.random(), random.random(), random.random())
 
     @abstractmethod
     def intersect(self, ray_orig: Vec3f, ray_dir: Vec3f) -> float:
@@ -36,8 +36,8 @@ class ImplicitObject(metaclass=ABCMeta):
 
 
 class Sphere(ImplicitObject):
-    def __init__(self, center: Vec3f, radius: float):
-        super(Sphere, self).__init__()
+    def __init__(self, center: Vec3f, radius: float, color: Optional[Vec3f] = None):
+        super(Sphere, self).__init__(color)
         self.center = center
         self.radius = radius
         self.radius2 = radius * radius

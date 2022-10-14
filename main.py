@@ -2,7 +2,7 @@ import time
 
 import numpy as np
 
-from pytracing.geometry import Vec3f
+from pytracing.raytracer_py.geometry import Vec3f
 from pytracing.render import render, Options
 from pytracing.shapes.shape import Sphere
 

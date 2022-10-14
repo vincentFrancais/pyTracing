@@ -7,8 +7,9 @@ import numpy as np
 import tqdm
 from PIL import Image
 
-from pytracing.geometry import Vec3f
-from pytracing.shapes.shape import Sphere, ImplicitObject
+from .geometry import Vec3f
+from .shapes.shape import Sphere, ImplicitObject
+from ..scene import Scene
 
 Options = collections.namedtuple("Options", ["width", "height", "fov", "camera_to_world"])
 
@@ -131,14 +132,25 @@ def make_ppm(opts: Options, frame_buffer):
             f.write(f"{int(r)} {int(g)} {int(b)}\n")
 
 
-def render(opts: Options, objs):
+def render(opts: Options, scene: Scene):
+    objs = scene_factory(scene)
     # compute_frame_buffer(opts, objs)
     tic = time.perf_counter()
     frame_buffer = compute_frame_buffer(opts, objs)
     toc = time.perf_counter()
     print(f"Frame buffer computed in {toc-tic:0.4f} sec")
-    print("writing ppm")
-    # make_ppm(opts, frame_buffer)
-    make_png(frame_buffer, opts)
+    return frame_buffer
+
+
+def scene_factory(scene: Scene):
+    objects_list = []
+    for o in scene.objects:
+        if o.type != "sphere":
+            raise ValueError("Fast renderer supports only sphere objects")
+        center = Vec3f(*o.center)
+        color = Vec3f(*o.color)
+        o_jit = Sphere(center, o.radius, color)
+        objects_list.append(o_jit)
+    return objects_list
 
 

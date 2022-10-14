@@ -1,6 +1,6 @@
 import numpy as np
 
-from pytracing.geometry.vector import Vec3f
+from pytracing.raytracer_py.geometry.vector import Vec3f
 
 
 def test_vec_initialisations():

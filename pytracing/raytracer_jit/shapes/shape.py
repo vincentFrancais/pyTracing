@@ -23,7 +23,7 @@ sphere_spec = [
 
 @jitclass(sphere_spec)
 class Sphere:
-    def __init__(self, center: Vec3f, radius: float, checkerboard: bool = False):
+    def __init__(self, center: Vec3f, radius: float, color: Vec3f = vec3f(0.5, 0.5, 0.5), checkerboard: bool = False):
         """Create a sphere primitive
 
         :param center: Center of sphere
@@ -33,7 +33,7 @@ class Sphere:
         :param checkerboard: Should render this sphere with a checkerboard pattern texture
         :type checkerboard: bool
         """
-        self.color = np.asarray([random.random(), random.random(), random.random()], dtype=np.float64)
+        self.color = color
         self.center = center
         self.radius = radius
         self.radius2 = radius * radius

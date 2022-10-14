@@ -3,9 +3,9 @@ import random
 import numpy as np
 from numba.typed import List as NumbaList
 
-from pytracing_numba.geometry.vector import vec3f
-from pytracing_numba.render import Options, render
-from pytracing_numba.shapes.shape import Sphere
+from pytracing.raytracer_jit.geometry.vector import vec3f
+from pytracing.raytracer_jit.render import Options, render
+from pytracing.raytracer_jit.shapes.shape import Sphere
 
 
 def main():

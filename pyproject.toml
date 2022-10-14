@@ -2,15 +2,11 @@
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
-[project]
-name = "pyTracing"
-description = "Simple ray tracing, supports only spheres as primitive as of now. Fast version using Numba"
-requires-python = ">=3.10"
-license = {text = "BSD 3-Clause License"}
-dependencies = [
-    "numba",
-    "numpy",
-    "Pillow",
-    "scipy",
-    "tqdm",
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "0.1.0"
+tag_format = "v$version"
+version_files = [
+    "pytracing/__init__.py",
+    "pyproject.toml:version"
 ]

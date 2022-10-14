@@ -1,7 +1,7 @@
 import numpy as np
 
-from pytracing.geometry.vector import Vec3f
-from pytracing.shapes.shape import Sphere, ImplicitObject
+from pytracing.raytracer_py.geometry.vector import Vec3f
+from pytracing.shapes.shape import Sphere
 
 
 def test_ray_hit():
