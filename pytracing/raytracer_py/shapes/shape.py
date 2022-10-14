@@ -6,7 +6,6 @@ import numpy as np
 
 from ..geometry.vector import Vec3f, Vec2f
 
-
 _F_EPS = np.finfo(float).eps
 FARAWAY = 1.0e39
 
@@ -82,4 +81,3 @@ class Sphere(ImplicitObject):
         t = np.where((t0 > 0) & (t0 < t1), t0, t1).item()
         hit = (discr > 0) & (t > 0)
         return np.where(hit, t, np.inf).item()
-

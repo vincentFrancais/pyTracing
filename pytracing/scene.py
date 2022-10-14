@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-import dataclasses
-from collections import namedtuple
 import random
+from collections import namedtuple
 from typing import Iterable, Optional
 
 _SphereDescript = namedtuple("_SphereDescript", ["type", "center", "radius", "color"])
+
 
 # @dataclasses.dataclass
 # class SceneObjectDescriptor:

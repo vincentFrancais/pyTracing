@@ -4,7 +4,6 @@ from typing import NewType
 
 import numba
 import numpy as np
-from PIL import Image
 from numba import literal_unroll
 from numba.typed import List as NumbaList
 
@@ -16,7 +15,7 @@ Vec3f = NewType("Vec3f", np.ndarray)
 
 Options = collections.namedtuple("Options", ["width", "height", "fov", "camera_to_world", "max_bounces"])
 
-L = vec3f(10, 20, -5)   # Light
+L = vec3f(10, 20, -5)  # Light
 L_color = vec3f(1, 1, 1)
 
 

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Iterable, Optional, TypeVar, Protocol
+from typing import Optional, TypeVar, Protocol
 
 import numpy as np
 

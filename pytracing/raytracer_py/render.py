@@ -2,7 +2,6 @@ import collections
 import time
 from typing import Iterable
 
-import numba
 import numpy as np
 import tqdm
 from PIL import Image
@@ -97,7 +96,7 @@ def compute_frame_buffer(opts: Options, objs):
     ray_origin = Vec3f(0, 0, 0)
     ray_origin.mult_vect_matrix(opts.camera_to_world)
     c = 0
-    bar = tqdm.tqdm(total=opts.width*opts.height)
+    bar = tqdm.tqdm(total=opts.width * opts.height)
     for j in range(opts.height):
         for i in range(opts.width):
             x = (2 * (i + 0.5) / opts.width - 1) * image_aspect_ratio * scale
@@ -138,7 +137,7 @@ def render(opts: Options, scene: Scene):
     tic = time.perf_counter()
     frame_buffer = compute_frame_buffer(opts, objs)
     toc = time.perf_counter()
-    print(f"Frame buffer computed in {toc-tic:0.4f} sec")
+    print(f"Frame buffer computed in {toc - tic:0.4f} sec")
     return frame_buffer
 
 
@@ -152,5 +151,3 @@ def scene_factory(scene: Scene):
         o_jit = Sphere(center, o.radius, color)
         objects_list.append(o_jit)
     return objects_list
-
-
