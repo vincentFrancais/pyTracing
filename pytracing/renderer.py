@@ -21,22 +21,22 @@ def make_default_camera(precision):
 
 
 class Renderer:
-    def __init__(self, width: int = 640, height: int = 480, render_type: Literal["fast", "py"] = "fast"):
+    def __init__(self, width: int = 640, height: int = 480,
+                 render_type: Literal["fast", "py"] = "fast"):
         self._width = width
         self._height = height
         self._fov = 51.52
         self._render_type = render_type
-        self._out_file = "render.png"
         # self._precision = np.float64 if self._render_type == "fast" else np.float32
 
-    def render(self, scene: Scene):
+    def render(self, scene: Scene, out_file: str = "render.png"):
         if self._render_type == "fast":
             frame_buffer = self._render_jit(scene)
         elif self._render_type == "py":
             frame_buffer = self._render_py(scene)
         else:
             raise ValueError(f"Unknown render type {self._render_type}")
-        self.make_png(frame_buffer)
+        self.make_png(frame_buffer, out_file)
 
     def _render_py(self, scene: Scene):
         max_bounces = 3
@@ -52,11 +52,11 @@ class Renderer:
                                  make_default_camera(precision), max_bounces)
         return render_jit(render_options, scene)
 
-    def make_png(self, frame_buffer: np.ndarray):
+    def make_png(self, frame_buffer: np.ndarray, out_file: str):
         # The frame buffer is first clamped to [0-255]
         fb = frame_buffer.clip(0, 1) * 255
         # extract the R G B channels (first, second and third col of the frame buffer)
         # each channel is reshaped to the actual image size and converted to uint8
         # Each channel is converted to grayscale PIL Image, then merged to a RGB Image
         rgb = [Image.fromarray(fb[..., i].reshape((self._height, self._width)).astype(np.uint8), "L") for i in range(3)]
-        Image.merge("RGB", rgb).save(self._out_file)
+        Image.merge("RGB", rgb).save(out_file)
