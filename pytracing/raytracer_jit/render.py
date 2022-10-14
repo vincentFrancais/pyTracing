@@ -74,7 +74,6 @@ def cast_ray(ray_origin: Vec3f, ray_dir: Vec3f, bounce: int, max_bounces: int, o
     :return:
     """
     background = np.asarray((105. / 255., 105. / 255., 105. / 255.), dtype=np.float64)
-    scale = 4
 
     # we first compute the intersection for each object in the scene
     ts = np.asarray([o.intersect(ray_origin, ray_dir) for o in objs], dtype=np.float64)
@@ -92,6 +91,7 @@ def cast_ray(ray_origin: Vec3f, ray_dir: Vec3f, bounce: int, max_bounces: int, o
     hit_object = objs[nearest_idx]
     p_hit = ray_origin + ray_dir * t
 
+    col_ray = vec3f(0.05, 0.05, 0.05)
     normal = hit_object.get_normal(p_hit)
     to_light = normalize(L - p_hit)
     to_origin = normalize(ray_origin - p_hit)
@@ -102,10 +102,10 @@ def cast_ray(ray_origin: Vec3f, ray_dir: Vec3f, bounce: int, max_bounces: int, o
         # We first check that there is other objects in the scene
         if np.min(light_distances) < np.inf:
             # We are shadowed !!
-            return vec3f(0, 0, 0)
+            col_ray *= 0
 
     # Lambert shading (diffuse)
-    col_ray = hit_object.lambert_shading(p_hit, to_light)
+    col_ray += hit_object.lambert_shading(p_hit, to_light)
 
     if bounce < max_bounces:
         # We actually want to see a result before next year, so we limit the bounces
@@ -188,6 +188,6 @@ def scene_factory(scene: Scene):
             raise ValueError("Fast renderer supports only sphere objects")
         center = vec3f(*o.center)
         color = vec3f(*o.color)
-        o_jit = Sphere(center, o.radius, color)
+        o_jit = Sphere(center, o.radius, color, checkerboard=o.is_checkerboard)
         objects_list.append(o_jit)
     return objects_list

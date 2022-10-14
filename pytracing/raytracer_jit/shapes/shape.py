@@ -79,11 +79,11 @@ class Sphere:
         :return: The diffuse color component
         :rtype: Vec3f
         """
-        color = vec3f(0.05, 0.05, 0.05)
+        # color = vec3f(0.05, 0.05, 0.05)
         diffuse = self.diffuse_color(p_hit)
         lv = np.maximum(self.get_normal(p_hit).dot(to_light), 0)
-        color += diffuse * lv
-        return color
+        diffuse_color = diffuse * lv
+        return diffuse_color
 
     def diffuse_color(self, p_hit: Vec3f):
         """ Get the diffuse color texture of the sphere. If `checkerboard` is True, the diffuse color is blended

@@ -4,7 +4,7 @@ import random
 from collections import namedtuple
 from typing import Iterable, Optional
 
-_SphereDescript = namedtuple("_SphereDescript", ["type", "center", "radius", "color"])
+_SphereDescript = namedtuple("_SphereDescript", ["type", "center", "radius", "color", "is_checkerboard"])
 
 
 # @dataclasses.dataclass
@@ -24,7 +24,7 @@ class Scene:
         pass
 
     def add_sphere(self, center: Iterable[float | int], radius: float | int,
-                   color: Optional[Iterable[float | int]] = None):
+                   color: Optional[Iterable[float | int]] = None, is_checkerboard: bool = False):
         """ Add a sphere to the scene
 
         :param center: Center of sphere
@@ -33,8 +33,11 @@ class Scene:
         :type radius: float
         :param color: Sphere diffuse color. If None a random color is assigned
         :type color: Iterable[float | int] or None
+        :param is_checkerboard:
+        :type is_checkerboard:
         """
-        sphere = _SphereDescript(center=center, radius=radius, color=color, type="sphere")
+        sphere = _SphereDescript(center=center, radius=radius, color=color,
+                                 type="sphere", is_checkerboard=is_checkerboard)
         self._objects.append(sphere)
 
     def add_spheres_random(self, n_spheres: int):
@@ -50,7 +53,8 @@ class Scene:
             z = (0.5 + random.random()) * 10.
             radius = 0.5 * random.random() + 0.5
             color = (random.random(), random.random(), random.random())
-            self.add_sphere(center=(x, y, z), radius=radius, color=color)
+            is_checkerboard = random.random() > 0.5
+            self.add_sphere(center=(x, y, z), radius=radius, color=color, is_checkerboard=is_checkerboard)
 
     @property
     def objects(self):
